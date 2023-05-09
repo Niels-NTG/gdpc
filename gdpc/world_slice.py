@@ -11,7 +11,7 @@ import numpy as np
 
 from .vector_tools import Vec3iLike, addY, loop2D, loop3D, trueMod2D, Rect
 from .block import Block
-from . import interface
+from . import interface, lookup
 
 
 # Chunk format information:
@@ -173,6 +173,24 @@ class WorldSlice:
                         blockEntityTag['z'].value
                     )
                     self._blockEntities[blockEntityPos] = blockEntityTag
+
+        self._heightmaps['MOTION_BLOCKING_NO_PLANTS'] = np.zeros(self._rect.size, dtype=int)
+        plantFilter: set = lookup.PLANTS | lookup.AIRS
+        plantFilter.remove('minecraft:grass_block')
+        for pos in loop2D(ivec2(0, 0), self._rect.size):
+            for y in range(self._heightmaps['MOTION_BLOCKING_NO_LEAVES'][pos.x, pos.y], self.yBegin, -1):
+                if self.getBlock(ivec3(pos.x, y, pos.y)).id not in plantFilter:
+                    self._heightmaps['MOTION_BLOCKING_NO_PLANTS'][pos.x, pos.y] = y + 1
+                    break
+
+        self._heightmaps['OCEAN_FLOOR_NO_PLANTS'] = np.zeros(self._rect.size, dtype=int)
+        plantWaterFilter: set = lookup.PLANTS | lookup.FLUIDS
+        plantWaterFilter.remove('minecraft:grass_block')
+        for pos in loop2D(ivec2(0, 0), self._rect.size):
+            for y in range(self._heightmaps['OCEAN_FLOOR'][pos.x, pos.y], self.yBegin, -1):
+                if self.getBlock(ivec3(pos.x, y, pos.y)).id not in plantWaterFilter:
+                    self._heightmaps['OCEAN_FLOOR_NO_PLANTS'][pos.x, pos.y] = y + 1
+                    break
 
 
     def __repr__(self):
