@@ -563,7 +563,7 @@ class Editor:
         """Updates the cached world slice."""
         if self._worldSlice is None:
             raise RuntimeError("No world slice is cached. Call .loadWorldSlice() with cache=True first.")
-        return self.loadWorldSlice(self._worldSlice.rect, self._worldSlice.heightmaps.keys(), cache=True)
+        return self.loadWorldSlice(self._worldSlice.rect, cache=True)
 
 
     def getMinecraftVersion(self):
