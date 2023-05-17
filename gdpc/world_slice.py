@@ -175,7 +175,7 @@ class WorldSlice:
                     self._blockEntities[blockEntityPos] = blockEntityTag
 
         self._heightmaps['MOTION_BLOCKING_NO_PLANTS'] = np.zeros(self._rect.size, dtype=int)
-        plantFilter: set = lookup.PLANTS | lookup.AIRS | 'minecraft:bee_nest'
+        plantFilter: set = lookup.PLANTS | lookup.AIRS | {'minecraft:bee_nest'}
         plantFilter.remove('minecraft:grass_block')
         for pos in loop2D(ivec2(0, 0), self._rect.size):
             for y in range(self._heightmaps['MOTION_BLOCKING_NO_LEAVES'][pos.x, pos.y], self.yBegin, -1):
@@ -184,7 +184,7 @@ class WorldSlice:
                     break
 
         self._heightmaps['OCEAN_FLOOR_NO_PLANTS'] = np.zeros(self._rect.size, dtype=int)
-        plantWaterFilter: set = lookup.PLANTS | lookup.FLUIDS | 'minecraft:bee_nest'
+        plantWaterFilter: set = lookup.PLANTS | lookup.FLUIDS | {'minecraft:bee_nest'}
         plantWaterFilter.remove('minecraft:grass_block')
         for pos in loop2D(ivec2(0, 0), self._rect.size):
             for y in range(self._heightmaps['OCEAN_FLOOR'][pos.x, pos.y], self.yBegin, -1):
