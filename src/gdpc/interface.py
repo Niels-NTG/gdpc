@@ -319,8 +319,19 @@ def getStructure(position: Vec3iLike, size: Vec3iLike, dimension: Optional[str] 
     return response.content
 
 
-def getEntities(selector: str = None, includeData: Optional[bool] = False, dimension: Optional[str] = None, retries=0, timeout=None, host=DEFAULT_HOST):
+def getEntities(selector: Optional[str] = None, includeData: bool = True, dimension: Optional[str] = None, retries=0, timeout=None, host=DEFAULT_HOST):
     url = f'{host}/entities'
+    parameters = {
+        'selector': selector,
+        'dimension': dimension,
+        'includeData': includeData,
+    }
+    response = _request(method='GET', url=url, params=parameters, retries=retries, timeout=timeout)
+    return response.json()
+
+
+def getPlayers(selector: Optional[str] = None, includeData: bool = True, dimension: Optional[str] = None, retries=0, timeout=None, host=DEFAULT_HOST):
+    url = f'{host}/players'
     parameters = {
         'selector': selector,
         'dimension': dimension,
