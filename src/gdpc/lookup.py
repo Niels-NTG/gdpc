@@ -844,7 +844,8 @@ BLOCKS = ORES | MINERAL_BLOCKS | SOILS | STONES | FLUIDS | LIQUID_BASED \
          | CRANIUMS | CREATIVE_ONLY | COMMANDS_ONLY | INVISIBLE_BLOCKS
 
 INVENTORY_BLOCKS = {"minecraft:barrel",
-                    "minecraft:hopper", } | CHESTS | SHULKER_BOXES
+                    "minecraft:hopper",
+                    "minecraft:chiseled_bookshelf", } | CHESTS | SHULKER_BOXES
 
 # ================================================= grouped by structure
 # underwater
@@ -2223,6 +2224,7 @@ INVENTORY_SIZE_TO_CONTAINER_BLOCKS = {
     ivec2(3,3): {"minecraft:dispenser", "minecraft:dropper", },
     ivec2(5,1): {"minecraft:hopper", "minecraft:brewing_stand", },
     ivec2(3,1): FURNACES,
+    ivec2(3, 2): "minecraft:chiseled_bookshelf",
 }
 CONTAINER_BLOCK_TO_INVENTORY_SIZE = {}
 for size, ids in INVENTORY_SIZE_TO_CONTAINER_BLOCKS.items():
