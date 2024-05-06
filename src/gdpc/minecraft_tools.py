@@ -141,7 +141,7 @@ def bookData(
         characters_left -= 2
         lines_left -= 1
         pixels_left = lookup.BOOK_PIXELS_PER_LINE
-        outputPages[-1] += "\n"
+        # outputPages[-1] += "\n"
 
     def newpage():
         nonlocal characters_left, lines_left, pixels_left, outputPages
@@ -207,9 +207,9 @@ def bookData(
     pageJSON = [json.dumps({"text": p}) for p in outputPages]
     return (
         "{"
-        f'title: {repr(title)}, author: {repr(author)}, '
+        f'title:{repr(title)}, author: {repr(author)}, '
         f'display:{{Lore:[{repr(loreJSON)}]}}, '
-        f'pages: [{",".join(repr(p) for p in pageJSON)}]'
+        f'pages:[{",".join(repr(p) for p in pageJSON)}]'
         "}"
     )
 
