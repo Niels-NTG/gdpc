@@ -844,7 +844,8 @@ BLOCKS = ORES | MINERAL_BLOCKS | SOILS | STONES | FLUIDS | LIQUID_BASED \
          | CRANIUMS | CREATIVE_ONLY | COMMANDS_ONLY | INVISIBLE_BLOCKS
 
 INVENTORY_BLOCKS = {"minecraft:barrel",
-                    "minecraft:hopper", } | CHESTS | SHULKER_BOXES
+                    "minecraft:hopper",
+                    "minecraft:chiseled_bookshelf", } | CHESTS | SHULKER_BOXES
 
 # ================================================= grouped by structure
 # underwater
