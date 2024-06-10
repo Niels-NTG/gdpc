@@ -4,25 +4,24 @@ It is recommended to use the higher-level `editor.Editor` class instead.
 """
 
 
-from typing import Sequence, Tuple, Optional, List, Dict, Any, Union
-from functools import partial
-import time
-from urllib.parse import urlparse
-import logging
-import json
 import io
+import json
+import logging
+import time
+from functools import partial
+from typing import Sequence, Tuple, Optional, List, Dict, Any, Union
+from urllib.parse import urlparse
 
-from glm import ivec3
-from nbt import nbt
+import nbtlib
 import requests
+from glm import ivec3
 from requests.exceptions import ConnectionError as RequestConnectionError
 
 from . import __url__
+from . import exceptions
+from .block import Block
 from .utils import withRetries
 from .vector_tools import Vec2iLike, Vec3iLike, Box
-from .block import Block
-from . import exceptions
-
 
 DEFAULT_HOST = "http://localhost:9000"
 
@@ -232,7 +231,7 @@ def getChunks(position: Vec2iLike, size: Optional[Vec2iLike] = None, dimension: 
     return response.content if asBytes else response.text
 
 
-def placeStructure(structureData: Union[bytes, nbt.NBTFile], position: Vec3iLike, mirror: Optional[Vec2iLike] = None, rotate: Optional[int] = None, pivot: Optional[Vec3iLike] = None, includeEntities: Optional[bool] = None, dimension: Optional[str] = None, doBlockUpdates=True, spawnDrops=False, customFlags: str = "", retries=0, timeout=None, host=DEFAULT_HOST):
+def placeStructure(structureData: nbtlib.Compound, position: Vec3iLike, mirror: Optional[Vec2iLike] = None, rotate: Optional[int] = None, pivot: Optional[Vec3iLike] = None, includeEntities: Optional[bool] = None, dimension: Optional[str] = None, doBlockUpdates=True, spawnDrops=False, customFlags: str = "", retries=0, timeout=None, host=DEFAULT_HOST):
     """Places a structure defined using the Minecraft structure format in the world.
 
     <structureData> should be a string of bytes in the Minecraft structure file format, the format used by the
@@ -244,12 +243,11 @@ def placeStructure(structureData: Union[bytes, nbt.NBTFile], position: Vec3iLike
     See the GDMC HTTP API documentation for more information about these parameters:
     https://github.com/Niels-NTG/gdmc_http_interface/blob/master/docs/Endpoints.md#place-nbt-structure-file-post-structure
     """
-    if isinstance(structureData, nbt.NBTFile):
-        # If data is an instance of NBTFile instead of bytes, write out the bytes representing an NBT file to a buffer.
-        outputBuffer = io.BytesIO()
-        structureData.write_file(buffer=outputBuffer)
-        structureData = outputBuffer.getvalue()
-        outputBuffer.close()
+    # If data is an instance of NBTFile instead of bytes, write out the bytes representing an NBT file to a buffer.
+    outputBuffer = io.BytesIO()
+    structureData.write(outputBuffer)
+    structureData = outputBuffer.getvalue()
+    outputBuffer.close()
 
     url = f"{host}/structure"
     x, y, z = position

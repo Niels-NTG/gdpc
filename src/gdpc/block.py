@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from copy import copy, deepcopy
 import random
 
+import nbtlib
 from glm import bvec3
 from nbt import nbt
 
@@ -64,8 +65,8 @@ class Block:
 
     def stateString(self):
         """Returns a string containing the block states of this block, including the outer brackets."""
-        stateString = ",".join([f"{key}={value}" for key, value in self.states.items()])
-        return "" if stateString == "" else f"[{stateString}]"
+        stateString = ",".join([f"{key}:{value}" for key, value in self.states.items()])
+        return "" if stateString == "" else f"{{{stateString}}}"
 
 
     def __str__(self):
@@ -87,7 +88,7 @@ class Block:
 
 
     @staticmethod
-    def fromBlockStateTag(blockStateTag: nbt.TAG_Compound, blockEntityTag: Optional[nbt.TAG_Compound] = None):
+    def fromBlockStateTag(blockStateTag: nbtlib.Compound, blockEntityTag: Optional[nbtlib.Compound] = None):
         """Parses a block state compound tag (as found in chunk palettes) into a Block.\n
         If <blockEntityTag> is provided, it is parsed into the Block's .data attribute."""
         block = Block(str(blockStateTag["Name"]))
