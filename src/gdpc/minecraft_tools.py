@@ -36,14 +36,14 @@ def signData(
         fields: List[str] = []
         fields.append(f'messages: [{",".join(repr(json.dumps({"text": line})) for line in [line1, line2, line3, line4])}]')
         if color:
-            fields.append(f'Color: {repr(color)}')
+            fields.append(f'color: {repr(color)}')
         if isGlowing:
-            fields.append('GlowingText: 1b')
+            fields.append('has_glowing_text: 1b')
         return "{" + ",".join(fields) + "}"
 
     fields: List[str] = []
     fields.append(f"front_text: {sideCompound(frontLine1, frontLine2, frontLine3, frontLine4, frontColor, frontIsGlowing)}")
-    fields.append( f"back_text: {sideCompound(backLine1,  backLine2,  backLine3,  backLine4,  backColor,  backIsGlowing)}")
+    fields.append(f"back_text: {sideCompound(backLine1,  backLine2,  backLine3,  backLine4,  backColor,  backIsGlowing)}")
     if isWaxed:
         fields.append("is_waxed: 1b")
     return "{" + ",".join(fields) + "}"
