@@ -231,6 +231,15 @@ def getChunks(position: Vec2iLike, size: Optional[Vec2iLike] = None, dimension: 
     return response.content if asBytes else response.text
 
 
+def getHeightMap(heightMapType: str = 'WORLD_SURFACE', dimension: Optional[str] = None, retries=0, timeout=None, host=DEFAULT_HOST):
+    parameters = {
+        'type': heightMapType,
+        'dimension': dimension,
+    }
+    response = _request(method='GET', url=f'{host}/heightmap', params=parameters, retries=retries, timeout=timeout)
+    return response.json()
+
+
 def placeStructure(structureData: nbtlib.Compound, position: Vec3iLike, mirror: Optional[Vec2iLike] = None, rotate: Optional[int] = None, pivot: Optional[Vec3iLike] = None, includeEntities: Optional[bool] = None, dimension: Optional[str] = None, doBlockUpdates=True, spawnDrops=False, customFlags: str = "", retries=0, timeout=None, host=DEFAULT_HOST):
     """Places a structure defined using the Minecraft structure format in the world.
 
