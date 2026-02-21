@@ -2,6 +2,14 @@
 
 Compatible with GDMC-HTTP **>=1.6.0, <2.0.0** and Minecraft **1.21.4**.
 
+**Fixes:**
+- The re-exports in the `gdpc` top-level package are now formatted in a more standard way, which may prevent issues with static analysis tools when importing them.
+
+
+# 8.1.0
+
+Compatible with GDMC-HTTP **>=1.6.0, <2.0.0** and Minecraft **1.21.4**.
+
 **Additions:**
 - Added `interface.placeEntities`. (Thanks [Niels-NTG](https://github.com/Niels-NTG)!)
 - Added `interface.updateEntities`. (Thanks [Niels-NTG](https://github.com/Niels-NTG)!)

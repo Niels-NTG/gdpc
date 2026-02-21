@@ -1,13 +1,16 @@
 """Provides various Minecraft-related utilities that do not require an :class:`.Editor`."""
+
+
+from __future__ import annotations
+
 import json
-import re
 from functools import lru_cache
-from typing import Optional, Union, List, Dict
 
 from deprecated import deprecated
 
 from .block import Block
-from .vector_tools import Vec2iLike, Rect
+from .vector_tools import Rect, Vec2iLike
+
 
 # ==================================================================================================
 # Constants
@@ -2454,21 +2457,21 @@ def signData(
     backLine4: str = "",
     backColor: str = "",
     backIsGlowing: bool = False,
-    isWaxed: bool = False
+    isWaxed: bool = False,
 ) -> str:
     """Returns an SNBT string with sign data.\n
     See also: :func:`.signBlock`, :func:`.editor_tools.placeSign`."""
 
-    def sideCompound(line1: str, line2: str, line3: str, line4: str, color: str, isGlowing: bool):
-        fields: List[str] = []
+    def sideCompound(line1: str, line2: str, line3: str, line4: str, color: str, isGlowing: bool) -> str:
+        fields: list[str] = []
         fields.append(f'messages: [{",".join(repr(json.dumps({"text": line})) for line in [line1, line2, line3, line4])}]')
         if color:
-            fields.append(f'Color: {repr(color)}')
+            fields.append(f"Color: {repr(color)}")
         if isGlowing:
-            fields.append('GlowingText: 1b')
+            fields.append("GlowingText: 1b")
         return "{" + ",".join(fields) + "}"
 
-    fields: List[str] = []
+    fields: list[str] = []
     fields.append(f"front_text: {sideCompound(frontLine1, frontLine2, frontLine3, frontLine4, frontColor, frontIsGlowing)}")
     fields.append( f"back_text: {sideCompound(backLine1,  backLine2,  backLine3,  backLine4,  backColor,  backIsGlowing)}")
     if isWaxed:
@@ -2476,7 +2479,7 @@ def signData(
     return "{" + ",".join(fields) + "}"
 
 
-def lecternData(bookData: Optional[str], page: int = 0) -> str:
+def lecternData(bookData: str | None, page: int = 0) -> str:
     """Returns an SNBT string with lectern data.\n
     ``bookData`` should be an SNBT string defining a book.
     You can use :func:`.bookData` to create such a string.\n
@@ -2488,13 +2491,13 @@ def lecternData(bookData: Optional[str], page: int = 0) -> str:
 
 def bookData(
     text: str,
-    title: str                = "Chronicle",
-    author: str               = "Anonymous",
-    description: str          = "I wonder what's inside?",
-    desccolor: str            = "gold",
-    descIsItalic: bool        = True,
+    title: str         = "Chronicle",
+    author: str        = "Anonymous",
+    description: str   = "I wonder what's inside?",
+    desccolor: str     = "gold",
+    descIsItalic: bool = True,
 ) -> str:
-    r"""Returns an SNBT string with written book data
+    r"""Returns an SNBT string with written book data.
 
     The following `special formatting tokens<https://minecraft.wiki/w/Formatting_codes>`_
     can be used to add markup to the text:
@@ -2676,7 +2679,7 @@ def bookData(
     pageJSON = [json.dumps({'text': p}) for p in pages]
     book = (
         "{"
-            "\"minecraft:written_book_content\": {"
+            '"minecraft:written_book_content": {'
                 f'title: {repr(title)}, '
                 f'author: {repr(author)}, '
                 f'pages: [{",".join(repr(p) for p in pageJSON)}]'
@@ -2696,7 +2699,7 @@ def signBlock(
     wood: str = "oak",
     wall: bool = False,
     facing: str = "north",
-    rotation: Union[str,int] = "0",
+    rotation: str | int = "0",
     frontLine1: str = "",
     frontLine2: str = "",
     frontLine3: str = "",
@@ -2709,7 +2712,7 @@ def signBlock(
     backLine4: str = "",
     backColor: str = "",
     backIsGlowing: bool = False,
-    isWaxed: bool = False
+    isWaxed: bool = False,
 ) -> Block:
     """Returns a sign Block with the specified properties.\n
     If ``wall`` is True, ``facing`` is used. Otherwise, ``rotation`` is used.
@@ -2721,12 +2724,12 @@ def signBlock(
         data=signData(
             frontLine1, frontLine2, frontLine3, frontLine4, frontColor, frontIsGlowing,
             backLine1, backLine2, backLine3, backLine4, backColor, backIsGlowing,
-            isWaxed
-        )
+            isWaxed,
+        ),
     )
 
 
-def lecternBlock(facing: str = "north", bookData: Optional[str] = None, page: int = 0) -> Block:
+def lecternBlock(facing: str = "north", bookData: str | None = None, page: int = 0) -> Block:
     """Returns a lectern Block with the specified properties.\n
     ``bookData`` should be an SNBT string defining a book.
     You can use :func:`.bookData` to create such a string.\n
@@ -2734,7 +2737,7 @@ def lecternBlock(facing: str = "north", bookData: Optional[str] = None, page: in
     return Block(
         "minecraft:lectern",
         {"facing": facing, "has_book": ("false" if bookData is None else "true")},
-        data=lecternData(bookData, page)
+        data=lecternData(bookData, page),
     )
 
 
@@ -2746,7 +2749,8 @@ def lecternBlock(facing: str = "north", bookData: Optional[str] = None, page: in
 def positionToInventoryIndex(position: Vec2iLike, inventorySize: Vec2iLike) -> int:
     """Returns the flat index of the slot at ``position`` in an inventory of size ``inventorySize``."""
     if not Rect(size=inventorySize).contains(position):
-        raise ValueError(f"{position} is not between (0, 0) and {tuple(inventorySize)}!")
+        msg = f"{position} is not between (0, 0) and {tuple(inventorySize)}!"
+        raise ValueError(msg)
     return position[0] + position[1] * inventorySize[0]
 
 
@@ -2762,8 +2766,8 @@ def getObtrusiveness(block: Block) -> int:
     Returns the percieved obtrusiveness of the given ``block``.
 
     Returns a numeric weight from 0 (invisible) to 4 (opaque).
-    """
-    from . import lookup # pylint: disable=import-outside-toplevel
+    """ # noqa: D212 D415
+    from . import lookup # noqa: I001
     if not block.id:
         return 0
     if block.id in lookup.INVISIBLE:
