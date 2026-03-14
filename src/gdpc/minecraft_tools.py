@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import json
+import re
 from functools import lru_cache
+from typing import Dict, List
 
 from deprecated import deprecated
 
@@ -2528,8 +2530,6 @@ def bookData(
 
     NOTE: For supported special characters see
     https://minecraft.wiki/Language#Font
-
-    Algorithm adapted from `Gutencraft <https://github.com/NightlyNexus/Gutencraft/blob/d04d696d8adf955d035dc393711cfdb4c508efe1/gutencraft/src/commonMain/kotlin/Gutencraft.kt>`_
     """
     pages: List[str] = []
 
@@ -2682,9 +2682,9 @@ def bookData(
             '"minecraft:written_book_content": {'
                 f'title: {repr(title)}, '
                 f'author: {repr(author)}, '
-                f'pages: [{",".join(repr(p) for p in pageJSON)}]'
+                f'pages: [{",".join(pageJSON)}]'
             "},"
-            f'"lore": [{repr(loreJSON)}]'
+            f'"lore": [{loreJSON}]'
         "}"
     )
     return book
